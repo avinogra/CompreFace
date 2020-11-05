@@ -41,6 +41,19 @@ $ docker build -t embedding-calculator --build-arg SCANNER=InsightFace .
 $ docker run -p3000:3000 embedding-calculator
 ```
 
+##### NVidia GPU support
+
+Build container with CUDA 10.1.
+```
+$ docker build -t cuda101-py37 -f gpu.Dockerfile .
+$ docker build -t embedding-calculator-gpu --build-arg BASE_IMAGE=cuda101-py37 --build-arg SCANNER=InsightFace --build-arg GPU_ID=0  .
+```
+
+Run with enabled gpu
+```
+$ docker run -p 3000:3000 --gpus all embedding-calculator-gpu
+```
+
 ### Run tests
 Unit tests
 ```
@@ -83,6 +96,14 @@ Optimizes face detection library parameters with a given annotated image dataset
 $ mkdir tmp
 $ python -m tools.optimize_detection_params
 ```
+
+# Benchmark
+
+Perform the following steps:
+1. [Build and run](#build) `embedding-calculator` with the needed scanner backend and CPU/GPU supports
+1. Run a benchmark:
+    1. inside the container `docker exec embedding-calculator ./benchmark`
+    1. or locally `cd .embedding-calculator && ./benchmark.sh` (require exposing API at localhost:3000)
 
 # Troubleshooting
 
